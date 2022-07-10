@@ -44,7 +44,7 @@ After we examined Linux kernel structure, it worth spending some time investigat
 
   Here for each `.c` file we build corresponding `.o` file by calling `if_changed` function with the argument `compile`. `if_changed` then looks for `cmd_compile` variable (it adds `cmd_` prefix to the first argument) and checks whether this variable has been updated since the last execution, or any of the prerequisites has been changed. If yes - `cmd_compile` command is executed and object file is regenerated. Our sample rule has 2 prerequisites: source `.c` file and `FORCE`. `FORCE` is a special prerequisite that forces the recipe to be called each time when `make` command is called. Without it, the recipe would be called only if `.c` file was changed. You can read more about `FORCE` target [here](https://www.gnu.org/software/make/manual/html_node/Force-Targets.html).
 
-### Building the kernel
+### 编译内核
 
 Now, that we learned some important concepts about the Linux build system, let's try to figure out what exactly is going on after you type `make` command. This process is very complicated and includes a lot of details, most of which we will skip. Our goal will be to answer 2 questions.
 
@@ -200,7 +200,7 @@ We are going to tackle the second question first.
 
   Inside it's recipe this target calls `rule_cc_o_c`. This rule is responsible for a lot of things, like checking the source code for some common errors (`cmd_checksrc`), enabling versioning for exported module symbols (`cmd_modversions_c`), using [objtool](https://github.com/torvalds/linux/tree/v4.14/tools/objtool) to validate some aspects of generated object files and constructing a list of calls to `mcount` function so that [ftrace](https://github.com/torvalds/linux/blob/v4.14/Documentation/trace/ftrace.txt) can find them quickly. But most importantly it calls `cmd_cc_o_c` command that actually compiles all `.c` files to object files. 
 
-### Conclusion
+### 总结
 
 Wow, it was a long journey inside kernel build system internals! Still, we skipped a lot of details and, for those who want to learn more about the subject, I can recommend to read the following [document](https://github.com/torvalds/linux/blob/v4.14/Documentation/kbuild/makefiles.txt) and continue reading Makefiles source code. Let me now emphasize the important points, that you should take as a take-home message from this chapter.
 

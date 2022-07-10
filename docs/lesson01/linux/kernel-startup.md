@@ -1,6 +1,6 @@
-## 1.4: Linux startup sequence
+## 1.4: Linux启动顺序
 
-### Searching for the entry point
+### 搜索入口
 
 After taking a look at the Linux project structure and examining how it can be built, next logical step is to find the program entry point. This step might be trivial for a lot of programs, but not for the Linux kernel. 
 

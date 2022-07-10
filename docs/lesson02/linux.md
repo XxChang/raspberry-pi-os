@@ -70,15 +70,15 @@ Only if current EL is EL2 branch to label `1`, otherwise we can't do EL2 setup a
 
 ```
     mrs    x0, sctlr_el1
-CPU_BE(    orr    x0, x0, #(3 << 24)    )    // Set the EE and E0E bits for EL1
-CPU_LE(    bic    x0, x0, #(3 << 24)    )    // Clear the EE and E0E bits for EL1
+CPU_BE(    orr    x0, x0, #(3 << 24)    )    // 设置EL1的EE和E0E位
+CPU_LE(    bic    x0, x0, #(3 << 24)    )    // 清理EL1的EE和E0E位
     msr    sctlr_el1, x0
     mov    w0, #BOOT_CPU_MODE_EL1        // This cpu booted in EL1
     isb
     ret
 ```
 
-If it happens that we execute at EL1, `sctlr_el1` register is updated so that CPU works in either `big-endian` of `little-endian` mode depending on the value of [CPU_BIG_ENDIAN](https://github.com/torvalds/linux/blob/v4.14/arch/arm64/Kconfig#L612) config setting. Then we just exit from the `el2_setup` function and return [BOOT_CPU_MODE_EL1](https://github.com/torvalds/linux/blob/v4.14/arch/arm64/include/asm/virt.h#L55) constant. Accordingly to [ARM64 Function Calling Conventions](http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/IHI0055B_aapcs64.pdf) return value should be placed in `x0` register (or `w0` in our case. You can think about `w0` register as the first 32 bit of `x0`.).
+If it happens that we execute at EL1, `sctlr_el1` register is updated so that CPU works in either `big-endian` of `little-endian` mode depending on the value of [CPU_BIG_ENDIAN](https://github.com/torvalds/linux/blob/v4.14/arch/arm64/Kconfig#L612) config setting. Then we just exit from the `el2_setup` function and return [BOOT_CPU_MODE_EL1](https://github.com/torvalds/linux/blob/v4.14/arch/arm64/include/asm/virt.h#L55) constant. 根据 [ARM64 Function Calling Conventions](http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/IHI0055B_aapcs64.pdf) 返回值应该被放在 `x0` 寄存器中 (或者在我们的例子中是 `w0`，你可以把 `w0` 寄存器看作是`x0`的前32位 )。
 
 ```
 1:    mrs    x0, sctlr_el2
@@ -87,14 +87,13 @@ CPU_LE(    bic    x0, x0, #(1 << 25)    )    // Clear the EE bit for EL2
     msr    sctlr_el2, x0
 ```
 
-If it appears that we are booted in EL2 we are doing the same kind of setup for EL2 (note that this time `sctlr_el2` register is used instead of `sctlr_el1`.).
+如果这段代码出现了，那么就是用EL2启动了我们，我们正在对EL2做同样的设置(注意这时候用的是`sctlr_el2`寄存器而不是`sctlr_el1`寄存器)。
 
 ```
 #ifdef CONFIG_ARM64_VHE
     /*
-     * Check for VHE being present. For the rest of the EL2 setup,
-     * x2 being non-zero indicates that we do have VHE, and that the
-     * kernel is intended to run at EL2.
+     * 检查现在VHE的值。For the rest of the EL2 setup,
+     * 非零的x2指出我们有VHE，那么内核将准备运行在EL2。
      */
     mrs    x2, id_aa64mmfr1_el1
     ubfx    x2, x2, #8, #4
@@ -103,7 +102,7 @@ If it appears that we are booted in EL2 we are doing the same kind of setup for 
 #endif
 ```
 
-If [Virtualization Host Extensions (VHE)](https://developer.arm.com/products/architecture/a-profile/docs/100942/latest/aarch64-virtualization) is enabled via [ARM64_VHE](https://github.com/torvalds/linux/blob/v4.14/arch/arm64/Kconfig#L926) config variable and the host machine supports them, `x2` then is updated with non zero value. `x2` will be used to check whether `VHE` is enabled later in the same function.
+如果通过 [ARM64_VHE](https://github.com/torvalds/linux/blob/v4.14/arch/arm64/Kconfig#L926) 配置变量，[Virtualization Host Extensions (VHE)](https://developer.arm.com/products/architecture/a-profile/docs/100942/latest/aarch64-virtualization)  被使能了且主机支持它，那么用非零值更新 `x2`。在同一个函数中随后 `x2` 将被用于检查 `VHE` 是否被使能了。
 
 ```
     mov    x0, #HCR_RW            // 64-bit EL1
@@ -125,7 +124,15 @@ Here we set `hcr_el2` register. We used the same register to set 64-bit executio
      * Note that when HCR_EL2.E2H == 1, CNTHCTL_EL2 has the same bit layout
      * as CNTKCTL_EL1, and CNTKCTL_EL1 accessing instructions are redefined
      * to access CNTHCTL_EL2. This allows the kernel designed to run at EL1
-     * to transparently mess with the EL0 bits via CNTKCTL_EL1 access in
+     * to transparently mess```
+    mrs    x0, sctlr_el1
+CPU_BE(    orr    x0, x0, #(3 << 24)    )    // Set the EE and E0E bits for EL1
+CPU_LE(    bic    x0, x0, #(3 << 24)    )    // Clear the EE and E0E bits for EL1
+    msr    sctlr_el1, x0
+    mov    w0, #BOOT_CPU_MODE_EL1        // This cpu booted in EL1
+    isb
+    ret
+``` with the EL0 bits via CNTKCTL_EL1 access in
      * EL2.
      */
     cbnz    x2, 1f
@@ -160,7 +167,7 @@ Next piece of code is well explained in the comment above it. I have nothing to 
 #endif
 ```
 
-Next code snippet is executed only if GICv3 is available and enabled. GIC stands for Generic Interrupt Controller. v3 version of the GIC specification adds a few features, that are particularly useful in virtualization context. For example, with GICv3 it becomes possible to have LPIs (Locality-specific Peripheral Interrupt). Such interrupts are routed via message bus and their configuration is held in special tables in memory.  
+接下来的代码片段只有当GICv3可访问且被使能时才会执行。GIC表示通用中断控制器。v3版的GIC规范加了一些功能，在虚拟化上下文(virtualization context)特别有用。比如，CICv3使得 LPIs (Locality-specific Peripheral Interrupt) 变得可能. Such interrupts are routed via message bus and their configuration is held in special tables in memory.  
 
 The provided code is responsible for enabling SRE (System Register Interface) This step must be done before we will be able to use `ICC_*_ELn` registers and take advantages of GICv3 features. 
 
