@@ -303,14 +303,14 @@ The last 3 functions are very important, but they all are related to virtual mem
 * `__cpu_setup` Initialize various processor settings, mostly specific for virtual memory management.
 * `__primary_switch` Enable MMU and jump to [start_kernel](https://github.com/torvalds/linux/blob/v4.14/init/main.c#L509) function, which is architecture independent starting point.
 
-### Conclusion
+### 结论
 
-In this chapter, we briefly discussed how a processor is initialized when the Linux kernel is booted. In the next lesson, we will continue to closely work with the ARM processor and investigate a vital topic for any OS: interrupt handling.
- 
-##### Previous Page
+在这个章节中，我们简要地讨论了当Linux内核被启动时一个处理器是如何被初始化的。在下节课，我们将继续与ARM处理器密切地工作并研究对任何操作系统来说都是重要的主题: 中断处理。
 
-2.1 [Processor initialization: RPi OS](../../docs/lesson02/rpi-os.md)
+##### 上一页
 
-##### Next Page
+2.1 [处理器初始化: RPi OS](../../docs/lesson02/rpi-os.md)
 
-2.3 [Processor initialization: Exercises](../../docs/lesson02/exercises.md)
+##### 下一页
+
+2.3 [处理器初始化: 练习](../../docs/lesson02/exercises.md)
