@@ -2,7 +2,7 @@
 
 这个仓库包含一步步的指南，教你如何从零创造一个简单的操作系统(OS)内核。我把这个OS叫做Raspberry Pi OS 或者只是 RPI OS。大量的 RPi OS 源码基于 [Linux kernel](https://github.com/torvalds/linux), 但是 OS 的功能非常有限且只支持 [Raspberry PI 3](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/). 
 
-每个课程按照这样的方式来设计，它首先解释一些内核功能在RPi OS中是如何被实现的，然后它尝试证明在Linux内核中同样的功能是如何工作的。每节课在 [src](https://github.com/s-matyukevich/raspberry-pi-os/tree/master/src) 目录中有相关的文件夹，which contains a snapshot of the OS source code at the time when the lesson had just been completed. This allows the introduction of new concepts gracefully and helps readers to follow the evolution of the RPi OS. 理解这个指南不要求任何特定的OS开发技能。
+每个课程按照这样的方式来设计，它首先解释一些内核功能在RPi OS中是如何被实现的，然后它尝试证明在Linux内核中同样的功能是如何工作的。每节课在 [src](https://github.com/s-matyukevich/raspberry-pi-os/tree/master/src) 目录中有相关的文件夹，其包含完成课程所需的OS源码。这允许温和地引入新的概念并帮助读者理解RPi OS的进化。理解这个指南不要求任何特定的OS开发技能。
 
 关于这个项目的目的和历史的更多信息，请阅读 [导言](docs/Introduction.md). 项目仍然在开发中，如果你想要参与 - 请阅读 [投稿指南](docs/Contributions.md).
 
@@ -24,13 +24,13 @@
   </a>
 </p>
 
-## Table of Contents
+## 目录
 
 * **[导言](docs/Introduction.md)**
 * **[投稿指南](docs/Contributions.md)**
 * **[预备课](docs/Prerequisites.md)**
 * **课程 1: 内核初始化** 
-  * 1.1 [Introducing RPi OS, or bare metal "Hello, world!"](docs/lesson01/rpi-os.md)
+  * 1.1 [介绍RPi OS，或者裸机 "Hello, world!"](docs/lesson01/rpi-os.md)
   * Linux
     * 1.2 [项目结构](docs/lesson01/linux/project-structure.md)
     * 1.3 [内核编译系统](docs/lesson01/linux/build-system.md) 
@@ -61,7 +61,7 @@
 * **课程 6: 虚拟内存管理**
   * 6.1 [RPi OS](docs/lesson06/rpi-os.md) 
   * 6.2 Linux (In progress)
-  * 6.3 [Exercises](docs/lesson06/exercises.md)
+  * 6.3 [练习](docs/lesson06/exercises.md)
 * **课程 7: 信号和中断等待** (To be done)
 * **课程 8: 文件系统** (To be done)
 * **课程 9: 可执行文件 (ELF)** (To be done)
